@@ -5,23 +5,38 @@ import {authService} from "fbase";
 function App() {
   const [init, setInit] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser); // eslint-disable-line no-unused-vars
-  const [userObj, setUserObj] = useState(null);
+  const [userObj, setUserObj] = useState(authService.currentUser);
 
   useEffect(() => {
     authService.onAuthStateChanged((user) => {
     if (user) {
-      setIsLoggedIn(user)
-      setUserObj(user)
+      setUserObj({
+        uid: user.uid,
+        displayName: user.displayName,
+        updateProfile: (args) => user.updateProfile(args),
+      })
     } else {
       setIsLoggedIn(false)
     }
   setInit(true)
   });
   }, [])
+
+  const refreshUser = () => {
+    const user = authService.currentUser
+    setUserObj({
+      uid: user.uid,
+      displayName: user.displayName,
+      updateProfile: (args) => user.updateProfile(args),
+    })
+  }
+
   return (
     <>
     {init ? (
-      <AppRouter isLoggedIn = {isLoggedIn} userObj={userObj}/>
+      <AppRouter refreshUser={refreshUser}
+      isLoggedIn={Boolean(userObj)}
+      userObj={userObj}/>
     ) : (
       "initializing..."
     )}
