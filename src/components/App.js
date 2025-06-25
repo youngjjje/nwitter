@@ -4,7 +4,6 @@ import {authService} from "fbase";
 
 function App() {
   const [init, setInit] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser); // eslint-disable-line no-unused-vars
   const [userObj, setUserObj] = useState(authService.currentUser);
 
   useEffect(() => {
@@ -16,7 +15,7 @@ function App() {
         updateProfile: (args) => user.updateProfile(args),
       })
     } else {
-      setIsLoggedIn(false)
+      setUserObj(false)
     }
   setInit(true)
   });
